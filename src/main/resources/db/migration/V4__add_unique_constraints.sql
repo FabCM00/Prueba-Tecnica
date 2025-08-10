@@ -74,3 +74,6 @@ ON cuentas(estado);
 CREATE INDEX IF NOT EXISTS idx_transacciones_tipo_fecha 
 ON transacciones(tipo, fecha);
 
+
+
+

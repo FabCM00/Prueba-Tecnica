@@ -18,7 +18,7 @@ docker compose up -d
 mvn spring-boot:run
 
 # 3. Abrir en navegador
-http://localhost:8000/lab.html
+http://localhost:8000/swagger-ui/index.html
 ```
 
 ##  URLs Importantes
@@ -26,8 +26,14 @@ http://localhost:8000/lab.html
 | Servicio | URL |
 |----------|-----|
 | API | http://localhost:8000 |
+| Swagger UI | http://localhost:8000/swagger-ui/index.html |
+| OpenAPI (JSON) | http://localhost:8000/v3/api-docs |
 | Tester Web | http://localhost:8000/lab.html |
 | Base de Datos | http://localhost:8081 |
+
+### Documentación con Swagger/OpenAPI
+- Swagger UI: [http://localhost:8000/swagger-ui/index.html#/](http://localhost:8000/swagger-ui/index.html#/)
+- OpenAPI (JSON): [http://localhost:8000/v3/api-docs](http://localhost:8000/v3/api-docs)
 
 ##  Endpoints
 
@@ -58,18 +64,36 @@ http://localhost:8000/lab.html
 ### Clientes
 - POST `/api/clientes`
   - Request
-    ```json
-    {
-      "tipoIdentificacion": "CC",
-      "numIdentificacion": "1001",
-      "nombres": "Juan",
-      "apellidos": "Pérez",
-      "email": "juan@example.com",
-      "fechaNacimiento": "1990-05-10"
-    }
-    ```
+  ```json
+  {
+    "tipoIdentificacion": "CC",
+    "numIdentificacion": "1001",
+    "nombres": "Juan",
+    "apellidos": "Pérez",
+    "email": "juan@example.com",
+    "fechaNacimiento": "1990-05-10"
+  }
+  ```
   - Response (201)
-    ```json
+  ```json
+  {
+    "id": "<UUID>",
+    "tipoIdentificacion": "CC",
+    "numIdentificacion": "1001",
+    "nombres": "Juan",
+    "apellidos": "Pérez",
+    "email": "juan@example.com",
+    "fechaNacimiento": "1990-05-10",
+    "fechaCreacion": "2025-08-10T12:00:00Z",
+    "fechaModificacion": "2025-08-10T12:00:00Z",
+    "version": 0
+  }
+  ```
+- GET `/api/clientes`
+  - Query params (opcionales): `tipoIdentificacion`, `numIdentificacion`, `nombre`, `apellido`, `email`
+  - Response (200)
+  ```json
+  [
     {
       "id": "<UUID>",
       "tipoIdentificacion": "CC",
@@ -82,26 +106,8 @@ http://localhost:8000/lab.html
       "fechaModificacion": "2025-08-10T12:00:00Z",
       "version": 0
     }
-    ```
-- GET `/api/clientes`
-  - Query params (opcionales): `tipoIdentificacion`, `numIdentificacion`, `nombre`, `apellido`, `email`
-  - Response (200)
-    ```json
-    [
-      {
-        "id": "<UUID>",
-        "tipoIdentificacion": "CC",
-        "numIdentificacion": "1001",
-        "nombres": "Juan",
-        "apellidos": "Pérez",
-        "email": "juan@example.com",
-        "fechaNacimiento": "1990-05-10",
-        "fechaCreacion": "2025-08-10T12:00:00Z",
-        "fechaModificacion": "2025-08-10T12:00:00Z",
-        "version": 0
-      }
-    ]
-    ```
+  ]
+  ```
 - GET `/api/clientes/{id}`
   - Response (200): igual a POST (201)
 - PUT `/api/clientes/{id}`
@@ -113,16 +119,47 @@ http://localhost:8000/lab.html
 ### Cuentas
 - POST `/api/cuentas`
   - Request
-    ```json
-    {
-      "clienteId": "<UUID_CLIENTE>",
-      "tipoCuenta": "AHORROS",
-      "exentaGmf": false,
-      "usuarioPropietario": "empleado.demo"
-    }
-    ```
+  ```json
+  {
+    "clienteId": "<UUID_CLIENTE>",
+    "tipoCuenta": "AHORROS",
+    "exentaGmf": false,
+    "usuarioPropietario": "empleado.demo"
+  }
+  ```
   - Response (201)
-    ```json
+  ```json
+  {
+    "id": "<UUID>",
+    "clienteId": "<UUID_CLIENTE>",
+    "tipoCuenta": "AHORROS",
+    "numeroCuenta": "53XXXXXXXX",
+    "estado": "ACTIVA",
+    "saldo": 0.0,
+    "exentaGmf": false,
+    "usuarioPropietario": "empleado.demo",
+    "fechaCreacion": "2025-08-10T12:00:00Z",
+    "fechaModificacion": "2025-08-10T12:00:00Z",
+    "version": 0
+  }
+  ```
+- POST `/api/cuentas/con-saldo`
+  - Request
+  ```json
+  {
+    "clienteId": "<UUID_CLIENTE>",
+    "tipoCuenta": "AHORROS",
+    "saldoInicial": 100000.00,
+    "exentaGmf": false,
+    "usuarioPropietario": "empleado.demo"
+  }
+  ```
+  - Response (201): igual a POST `/api/cuentas` con `saldo` inicial
+- GET `/api/cuentas`
+  - Query params (opcionales): `clienteId`, `tipoCuenta`, `estado`, `numeroCuenta`
+  - Response (200)
+  ```json
+  [
     {
       "id": "<UUID>",
       "clienteId": "<UUID_CLIENTE>",
@@ -136,106 +173,75 @@ http://localhost:8000/lab.html
       "fechaModificacion": "2025-08-10T12:00:00Z",
       "version": 0
     }
-    ```
-- POST `/api/cuentas/con-saldo`
-  - Request
-    ```json
-    {
-      "clienteId": "<UUID_CLIENTE>",
-      "tipoCuenta": "AHORROS",
-      "saldoInicial": 100000.00,
-      "exentaGmf": false,
-      "usuarioPropietario": "empleado.demo"
-    }
-    ```
-  - Response (201): igual a POST `/api/cuentas` con `saldo` inicial
-- GET `/api/cuentas`
-  - Query params (opcionales): `clienteId`, `tipoCuenta`, `estado`, `numeroCuenta`
-  - Response (200)
-    ```json
-    [
-      {
-        "id": "<UUID>",
-        "clienteId": "<UUID_CLIENTE>",
-        "tipoCuenta": "AHORROS",
-        "numeroCuenta": "53XXXXXXXX",
-        "estado": "ACTIVA",
-        "saldo": 0.0,
-        "exentaGmf": false,
-        "usuarioPropietario": "empleado.demo",
-        "fechaCreacion": "2025-08-10T12:00:00Z",
-        "fechaModificacion": "2025-08-10T12:00:00Z",
-        "version": 0
-      }
-    ]
-    ```
+  ]
+  ```
 - GET `/api/cuentas/{id}`
   - Response (200)
-    ```json
-    {
-      "id": "<UUID>",
-      "clienteId": "<UUID_CLIENTE>",
-      "tipoCuenta": "AHORROS",
-      "numeroCuenta": "53XXXXXXXX",
-      "estado": "ACTIVA",
-      "saldo": 0.0,
-      "exentaGmf": false,
-      "usuarioPropietario": "empleado.demo",
-      "fechaCreacion": "2025-08-10T12:00:00Z",
-      "fechaModificacion": "2025-08-10T12:00:00Z",
-      "version": 0,
-      "movimientosRecientes": [
-        {
-          "id": "<UUID>",
-          "cuentaId": "<UUID>",
-          "tipoMov": "CREDIT",
-          "monto": 50000.0,
-          "saldoAntes": 0.0,
-          "saldoDespues": 50000.0,
-          "fecha": "2025-08-10T12:00:00Z"
-        }
-      ]
-    }
-    ```
+  ```json
+  {
+    "id": "<UUID>",
+    "clienteId": "<UUID_CLIENTE>",
+    "tipoCuenta": "AHORROS",
+    "numeroCuenta": "53XXXXXXXX",
+    "estado": "ACTIVA",
+    "saldo": 0.0,
+    "exentaGmf": false,
+    "usuarioPropietario": "empleado.demo",
+    "fechaCreacion": "2025-08-10T12:00:00Z",
+    "fechaModificacion": "2025-08-10T12:00:00Z",
+    "version": 0,
+    "movimientosRecientes": [
+      {
+        "id": "<UUID>",
+        "cuentaId": "<UUID>",
+        "tipoMov": "CREDIT",
+        "monto": 50000.0,
+        "saldoAntes": 0.0,
+        "saldoDespues": 50000.0,
+        "fecha": "2025-08-10T12:00:00Z"
+      }
+    ]
+  }
+  ```
 - PUT `/api/cuentas/{id}`
   - Request
-    ```json
-    { "estado": "INACTIVA" }
-    ```
+  ```json
+  { "estado": "INACTIVA" }
+  ```
   - Response (200): cuenta en `CuentaResponse` (igual a creación con estado actualizado)
 
 ### Transacciones
 - POST `/api/transacciones/consignacion`
   - Headers opcional: `X-User: empleado.demo`
   - Request
-    ```json
-    { "cuentaDestinoId": "<UUID_CUENTA>", "monto": 50000, "descripcion": "Consignación" }
-    ```
+  ```json
+  { "cuentaDestinoId": "<UUID_CUENTA>", "monto": 50000, "descripcion": "Consignación" }
+  ```
   - Response (201)
-    ```json
-    {
-      "id": "<UUID>",
-      "tipo": "CONSIGNACION",
-      "fecha": "2025-08-10T12:00:00Z",
-      "cuentaDestinoId": "<UUID_CUENTA>",
-      "monto": 50000.0,
-      "descripcion": "Consignación",
-      "referencia": null,
-      "estado": "OK",
-      "creadoPor": "empleado.demo"
-    }
-    ```
+  ```json
+  {
+    "id": "<UUID>",
+    "tipo": "CONSIGNACION",
+    "fecha": "2025-08-10T12:00:00Z",
+    "cuentaDestinoId": "<UUID_CUENTA>",
+    "monto": 50000.0,
+    "descripcion": "Consignación",
+    "referencia": null,
+    "estado": "OK",
+    "creadoPor": "empleado.demo"
+  }
+  ```
 - POST `/api/transacciones/retiro`
   - Request
-    ```json
-    { "cuentaOrigenId": "<UUID_CUENTA>", "monto": 20000, "descripcion": "Retiro" }
-    ```
+  ```json
+  { "cuentaOrigenId": "<UUID_CUENTA>", "monto": 20000, "descripcion": "Retiro" }
+  ```
   - Response (201): `TransaccionResponse` (tipo `RETIRO`)
 - POST `/api/transacciones/transferencia`
   - Request
-    ```json
-    { "cuentaOrigenId": "<UUID_ORIGEN>", "cuentaDestinoId": "<UUID_DESTINO>", "monto": 30000, "descripcion": "Transferencia" }
-    ```
+  ```json
+  { "cuentaOrigenId": "<UUID_ORIGEN>", "cuentaDestinoId": "<UUID_DESTINO>", "monto": 30000, "descripcion": "Transferencia" }
+  ```
   - Response (201): `TransaccionResponse` (tipo `TRANSFERENCIA`)
 - GET `/api/transacciones`
   - Query params (opcionales):
@@ -243,20 +249,20 @@ http://localhost:8000/lab.html
     - `fechaDesde=2025-01-01T00:00:00Z`
     - `fechaHasta=2025-12-31T23:59:59Z`
   - Response (200)
-    ```json
-    [
-      {
-        "id": "<UUID>",
-        "tipo": "CONSIGNACION",
-        "fecha": "2025-08-10T12:00:00Z",
-        "cuentaDestinoId": "<UUID_CUENTA>",
-        "monto": 50000.0,
-        "descripcion": "Consignación",
-        "estado": "OK",
-        "creadoPor": "empleado.demo"
-      }
-    ]
-    ```
+  ```json
+  [
+    {
+      "id": "<UUID>",
+      "tipo": "CONSIGNACION",
+      "fecha": "2025-08-10T12:00:00Z",
+      "cuentaDestinoId": "<UUID_CUENTA>",
+      "monto": 50000.0,
+      "descripcion": "Consignación",
+      "estado": "OK",
+      "creadoPor": "empleado.demo"
+    }
+  ]
+  ```
 
 ---
 
