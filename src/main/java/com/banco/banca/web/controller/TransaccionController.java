@@ -16,9 +16,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/transacciones")
 @RequiredArgsConstructor
+@Tag(name = "Transacciones", description = "Operaciones de consignación, retiro y transferencia")
 public class TransaccionController {
     private final TransaccionService transaccionService;
 

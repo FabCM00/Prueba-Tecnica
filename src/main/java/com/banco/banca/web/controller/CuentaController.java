@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/cuentas")
 @RequiredArgsConstructor
+@Tag(name = "Cuentas", description = "Gestión de cuentas bancarias")
 public class CuentaController {
     private final CuentaService cuentaService;
 

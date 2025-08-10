@@ -28,6 +28,7 @@ http://localhost:8000/lab.html
 | API | http://localhost:8000 |
 | Tester Web | http://localhost:8000/lab.html |
 | Base de Datos | http://localhost:8081 |
+| Swagger UI | http://localhost:8000/swagger-ui/index.html |
 
 ##  Endpoints
 
@@ -200,63 +201,47 @@ http://localhost:8000/lab.html
 - PUT `/api/cuentas/{id}`
   - Request
     ```json
-    { "estado": "INACTIVA" }
+    {
+      "estado": "INACTIVA"
+    }
     ```
-  - Response (200): cuenta en `CuentaResponse` (igual a creación con estado actualizado)
+  - Response (200): cuenta actualizada
 
 ### Transacciones
 - POST `/api/transacciones/consignacion`
-  - Headers opcional: `X-User: empleado.demo`
   - Request
     ```json
-    { "cuentaDestinoId": "<UUID_CUENTA>", "monto": 50000, "descripcion": "Consignación" }
-    ```
-  - Response (201)
-    ```json
     {
-      "id": "<UUID>",
-      "tipo": "CONSIGNACION",
-      "fecha": "2025-08-10T12:00:00Z",
       "cuentaDestinoId": "<UUID_CUENTA>",
       "monto": 50000.0,
-      "descripcion": "Consignación",
-      "referencia": null,
-      "estado": "OK",
-      "creadoPor": "empleado.demo"
+      "descripcion": "Consignación en efectivo"
     }
     ```
+  - Response (201): transacción creada
 - POST `/api/transacciones/retiro`
   - Request
     ```json
-    { "cuentaOrigenId": "<UUID_CUENTA>", "monto": 20000, "descripcion": "Retiro" }
+    {
+      "cuentaOrigenId": "<UUID_CUENTA>",
+      "monto": 20000.0,
+      "descripcion": "Retiro cajero"
+    }
     ```
-  - Response (201): `TransaccionResponse` (tipo `RETIRO`)
+  - Response (201): transacción creada
 - POST `/api/transacciones/transferencia`
   - Request
     ```json
-    { "cuentaOrigenId": "<UUID_ORIGEN>", "cuentaDestinoId": "<UUID_DESTINO>", "monto": 30000, "descripcion": "Transferencia" }
+    {
+      "cuentaOrigenId": "<UUID_CUENTA>",
+      "cuentaDestinoId": "<UUID_CUENTA>",
+      "monto": 20000.0,
+      "descripcion": "Pago servicios"
+    }
     ```
-  - Response (201): `TransaccionResponse` (tipo `TRANSFERENCIA`)
+  - Response (201): transacción creada
 - GET `/api/transacciones`
-  - Query params (opcionales):
-    - `cuenta=<UUID>`
-    - `fechaDesde=2025-01-01T00:00:00Z`
-    - `fechaHasta=2025-12-31T23:59:59Z`
-  - Response (200)
-    ```json
-    [
-      {
-        "id": "<UUID>",
-        "tipo": "CONSIGNACION",
-        "fecha": "2025-08-10T12:00:00Z",
-        "cuentaDestinoId": "<UUID_CUENTA>",
-        "monto": 50000.0,
-        "descripcion": "Consignación",
-        "estado": "OK",
-        "creadoPor": "empleado.demo"
-      }
-    ]
-    ```
+  - Query params (opcionales): `cuenta`, `fechaDesde`, `fechaHasta` (ISO-8601)
+  - Response (200): lista de transacciones
 
 ---
 
