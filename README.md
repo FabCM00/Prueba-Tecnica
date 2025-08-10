@@ -366,7 +366,7 @@ mvn clean test jacoco:report
    - Contraseña: banca
    - Base de datos: banca
 
-### Git : 
+### Git : https://github.com/ehc32/Prueba-Tecnica.git
 
 **Versión**: 1.0.0  
 **Actualizado**: 2025
