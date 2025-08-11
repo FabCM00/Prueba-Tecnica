@@ -5,20 +5,40 @@ Sistema bancario REST API para gestionar clientes, cuentas y transacciones.
 ##  Inicio Rápido
 
 ### Requisitos
-- Java 17+
-- Maven
 - Docker
+- (Opcional) Java 17+ y Maven, solo si deseas ejecutar la app localmente sin Docker
 
 ### Instalación
-```bash
-# 1. Levantar base de datos
-docker compose up -d
 
-# 2. Ejecutar aplicación
+#### Opción A: Todo con Docker (recomendado)
+```bash
+# Construir y levantar base de datos, Adminer y la API
+docker compose up -d --build
+
+# (Opcional) Ver logs de la API
+docker logs -f banca-app
+
+# Abrir en navegador
+start http://localhost:8000/swagger-ui/index.html
+```
+
+Para detener los servicios:
+```bash
+docker compose down
+```
+
+Nota: el primer build puede tardar unos minutos porque descarga dependencias y crea la imagen.
+
+#### Opción B: Solo BD en Docker y app local (desarrollo)
+```bash
+# 1) Levantar solo la base de datos y Adminer
+docker compose up -d postgres adminer
+
+# 2) Ejecutar la aplicación localmente
 mvn spring-boot:run
 
-# 3. Abrir en navegador
-http://localhost:8000/swagger-ui/index.html
+# 3) Abrir en navegador
+start http://localhost:8000/swagger-ui/index.html
 ```
 
 ##  URLs Importantes
@@ -366,11 +386,11 @@ mvn clean test jacoco:report
 ### Acceso a Adminer
 1. Ir a http://localhost:8081
 2. Configurar:
-   - Sistema: PostgreSQL
-   - Servidor: postgres
-   - Usuario: banca
-   - Contraseña: banca
-   - Base de datos: banca
+  - Sistema: PostgreSQL
+  - Servidor: postgres
+  - Usuario: banca
+  - Contraseña: banca
+  - Base de datos: banca
 
 ### Git : https://github.com/ehc32/Prueba-Tecnica.git
 
