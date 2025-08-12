@@ -375,6 +375,9 @@ mvn -Dtest=TransaccionServiceTest test
 
 # Ver cobertura
 mvn clean test jacoco:report
+
+#Con Docker 
+docker run --rm -v "${PWD}:/workspace" -w /workspace maven:3.9.6-eclipse-temurin-17 mvn clean test
 ```
 
 ### Cobertura de Tests
